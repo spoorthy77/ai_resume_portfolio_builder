@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complete Your Profile - AI Resume & Portfolio Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container" style="max-width: 700px;">
+    <h1>Complete Your Profile</h1>
+    <p style="color: #666; font-size: 14px;">The more complete your profile, the better AI-generated documents will be. Fill in all sections for best results.</p>
+
+    <form method="POST" action="/profile" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <div class="form-group">
+            <label for="headline">🎯 Professional Headline</label>
+            <input type="text" id="headline" name="headline" placeholder="e.g., Full Stack Developer | Python Enthusiast" value="{{ profile.get('headline', '') }}" required>
+            <small>A brief tagline that describes your professional role</small>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">📞 Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="e.g., (555) 123-4567" value="{{ profile.get('phone', '') }}" required>
+            <small>Your contact phone number</small>
+        </div>
+
+        <div class="form-group">
+            <label for="linkedin">💼 LinkedIn Profile</label>
+            <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile" value="{{ profile.get('linkedin', '') }}" required>
+            <small>Your LinkedIn profile URL</small>
+        </div>
+
+        <div class="form-group">
+            <label for="github">💻 GitHub Profile</label>
+            <input type="url" id="github" name="github" placeholder="https://github.com/yourusername" value="{{ profile.get('github', '') }}" required>
+            <small>Your GitHub profile URL</small>
+        </div>
+
+        <div class="form-group">
+            <label for="email">📧 Email Address</label>
+            <input type="email" id="email" name="email" placeholder="your.email@example.com" value="{{ profile.get('email', '') }}" required>
+            <small>Your professional email address</small>
+        </div>
+
+        <div class="form-group">
+            <label for="leetcode">🏆 LeetCode Profile</label>
+            <input type="url" id="leetcode" name="leetcode" placeholder="https://leetcode.com/yourusername" value="{{ profile.get('leetcode', '') }}">
+            <small>Your LeetCode profile URL (optional)</small>
+        </div>
+
+        <div class="form-group">
+            <label for="other_links">🔗 Other Links</label>
+            <textarea id="other_links" name="other_links" rows="2" placeholder="Portfolio: https://yourportfolio.com&#10;Personal Blog: https://yourblog.com&#10;Twitter: https://twitter.com/yourhandle">{{ profile.get('other_links', '') }}</textarea>
+            <small>Additional professional links (one per line, optional)</small>
+        </div>
+
+        <div class="form-group">
+            <label for="summary">📄 Professional Summary</label>
+            <textarea id="summary" name="summary" rows="4" placeholder="Write a brief overview of your professional background, skills, and career goals..." required>{{ profile.get('summary', '') }}</textarea>
+            <small>2-3 sentences about yourself and your professional objectives</small>
+        </div>
+
+        <div class="form-group">
+            <label for="skills">💡 Skills</label>
+            <textarea id="skills" name="skills" rows="3" placeholder="Python, JavaScript, React, SQL, Flask, Docker, Git..." required>{{ profile.get('skills', '') }}</textarea>
+            <small>List your technical and professional skills (comma separated)</small>
+        </div>
+
+        <div class="form-group">
+            <label for="projects">🚀 Projects</label>
+            <textarea id="projects" name="projects" rows="4" placeholder="Project Name - Brief description of what you built and your role. Include GitHub links if available." required>{{ profile.get('projects', '') }}</textarea>
+            <small>Describe your key projects and accomplishments</small>
+        </div>
+
+        <div class="form-group">
+            <label for="experience">💼 Work Experience</label>
+            <textarea id="experience" name="experience" rows="4" placeholder="Job Title - Company Name (Duration)&#10;e.g., Software Engineer - Tech Corp (2023-Present) | Responsibilities and achievements" required>{{ profile.get('experience', '') }}</textarea>
+            <small>List your work experience and professional roles</small>
+        </div>
+
+        <div class="form-group">
+            <label for="education">🎓 Education</label>
+            <textarea id="education" name="education" rows="3" placeholder="Degree - University/School Name (Graduation Year)&#10;e.g., Bachelor of Technology in Computer Science - XYZ University (2024)" required>{{ profile.get('education', '') }}</textarea>
+            <small>List your educational qualifications</small>
+        </div>
+
+        <div class="form-group">
+            <label for="dob">📅 Date of Birth</label>
+            <input type="date" id="dob" name="dob" value="{{ profile.get('dob', '') }}">
+            <small>Optional</small>
+        </div>
+
+        <div class="form-group">
+            <label for="languages">🌍 Languages Known</label>
+            <input type="text" id="languages" name="languages" placeholder="English, Kannada, Hindi" value="{{ profile.get('languages', '') }}">
+            <small>Optional (comma separated)</small>
+        </div>
+
+        <div class="form-group">
+            <label for="hobbies">🎯 Hobbies</label>
+            <input type="text" id="hobbies" name="hobbies" placeholder="Reading, Coding, Chess" value="{{ profile.get('hobbies', '') }}">
+            <small>Optional (comma separated)</small>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" style="flex: 1; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">💾 Save Profile</button>
+            <a href="/dashboard" style="flex: 1;"><button type="button" style="width: 100%; padding: 12px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">← Back to Dashboard</button></a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+        font-family: Arial, sans-serif;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group textarea:focus,
+    .form-group input:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .form-group small {
+        color: #666;
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    .container {
+        max-width: 700px;
+        margin: 50px auto;
+        padding: 40px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+</style>
+
+</body>
+</html>

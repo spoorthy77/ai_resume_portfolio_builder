@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+}
+
+.header {
+    text-align: center;
+}
+
+.name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.contact {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.contact a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.contact a:hover {
+    text-decoration: underline;
+}
+
+.section-title {
+    margin-top: 25px;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+}
+
+ul {
+    margin-top: 5px;
+}
+
+.project-title {
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="name"><strong>{{ user.name }}</strong></div>
+    <div class="contact">
+        Phone: {{ user.phone }} |
+        Email: <a href="mailto:{{ user.email }}">{{ user.email }}</a> |
+        {% if user.linkedin %}<a href="{{ user.linkedin }}" target="_blank">LinkedIn</a> |{% endif %}
+        {% if user.github %}<a href="{{ user.github }}" target="_blank">GitHub</a> |{% endif %}
+        {% if user.leetcode %}<a href="{{ user.leetcode }}" target="_blank">LeetCode</a>{% endif %}
+    </div>
+</div>
+
+<div class="section-title">PROFESSIONAL SUMMARY</div>
+<p>{{ resume.summary }}</p>
+
+<div class="section-title">EDUCATION</div>
+<ul>
+{% for edu in resume.education %}
+<li>{{ edu }}</li>
+{% endfor %}
+</ul>
+
+<div class="section-title">TECHNICAL SKILLS</div>
+<ul>
+{% for skill in resume.skills %}
+<li>{{ skill }}</li>
+{% endfor %}
+</ul>
+
+<div class="section-title">PROJECTS</div>
+{% for project in resume.projects %}
+<p class="project-title">{{ project.title }}</p>
+<ul>
+{% for point in project.description %}
+<li>{{ point }}</li>
+{% endfor %}
+</ul>
+{% endfor %}
+
+<div class="section-title">WORK EXPERIENCE</div>
+{% for job in resume.experience %}
+<p class="project-title">{{ job.role }} – {{ job.company }}</p>
+<ul>
+{% for point in job.description %}
+<li>{{ point }}</li>
+{% endfor %}
+</ul>
+{% endfor %}
+
+</body>
+</html>

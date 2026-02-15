@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - AI Resume & Portfolio Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1 style="text-align: center; color: #333;">AI Resume & Portfolio Builder</h1>
+    <h2>Welcome, {{ user_name }}</h2>
+
+    <div class="dashboard-buttons">
+        <a href="/profile"><button class="btn btn-primary">📝 Complete Profile</button></a>
+        <button class="btn btn-success" onclick="generateResume()">📄 Generate Resume (6 Templates + PDF/DOCX)</button>
+        <button class="btn btn-success" onclick="generateCoverLetter()">💼 Generate Cover Letter</button>
+        <button class="btn btn-success" onclick="generatePortfolio()">🎨 Generate Portfolio</button>
+        <a href="/logout"><button class="btn btn-danger">🚪 Logout</button></a>
+    </div>
+
+    <!-- Resume Optimization Section -->
+    <div class="info-section" style="margin-top: 40px; padding: 20px; background-color: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196F3;">
+        <h3 style="color: #1976D2;">🎯 AI Resume Optimization</h3>
+        <p style="color: #555; margin-bottom: 15px;">
+            Optimize your resume by comparing it against a job description. Get insights on matching skills and missing keywords.
+        </p>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="jobDescriptionInput" style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">Paste Job Description:</label>
+            <textarea 
+                id="jobDescriptionInput" 
+                placeholder="Paste the complete job description here..." 
+                style="width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: Arial, sans-serif; font-size: 14px; box-sizing: border-box;">
+            </textarea>
+        </div>
+        
+        <button class="btn btn-info" onclick="analyzeResume()" style="background-color: #2196F3; width: 100%;">
+            🔍 Analyze Resume
+        </button>
+        
+        <!-- Results Container -->
+        <div id="analysisResults" style="margin-top: 20px; display: none;">
+            <div style="background-color: white; padding: 15px; border-radius: 4px; border-left: 4px solid #4CAF50;">
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #1976D2; margin: 0 0 10px 0;">Match Score</h4>
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex: 1;">
+                            <div style="height: 25px; background-color: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                                <div id="matchScoreBar" style="height: 100%; background-color: #4CAF50; width: 0%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+                                    0%
+                                </div>
+                            </div>
+                        </div>
+                        <span id="matchScoreText" style="margin-left: 15px; font-size: 20px; font-weight: bold; color: #1976D2; min-width: 50px;">0%</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #1976D2; margin: 0 0 10px 0;">✅ Overlapping Skills</h4>
+                    <div id="overlappingKeywords" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <span style="color: #999; font-size: 14px;">No keywords yet</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #d32f2f; margin: 0 0 10px 0;">❌ Missing Skills</h4>
+                    <div id="missingKeywords" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <span style="color: #999; font-size: 14px;">No keywords yet</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 style="color: #1976D2; margin: 0 0 10px 0;">💡 Improvement Suggestions</h4>
+                    <ul id="suggestions" style="margin: 0; padding-left: 20px; color: #555;">
+                        <li style="margin-bottom: 8px;">Complete your analysis to get suggestions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div id="analyzeLoader" style="display: none; text-align: center; margin-top: 15px;">
+            <div style="display: inline-block; border: 3px solid #f3f3f3; border-top: 3px solid #2196F3; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
+            <p style="color: #666; margin-top: 10px;">Analyzing your resume...</p>
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
+        </div>
+    </div>
+
+    <div class="info-section" style="margin-top: 40px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+        <h3>✨ What's New: Multiple Resume Templates</h3>
+        <p style="color: #666; margin-bottom: 15px;">
+            Now you can choose from 6 different resume templates:
+        </p>
+        <ul style="color: #666; line-height: 1.8;">
+            <li><strong>📋 Professional</strong> - Formal, traditional resume layout</li>
+            <li><strong>🎨 Modern</strong> - Contemporary design with decorative elements</li>
+            <li><strong>📋 Simple</strong> - Clean, minimalist format</li>
+            <li><strong>⚙️ Technical</strong> - Focused on technical skills and projects</li>
+            <li><strong>🎓 Academic</strong> - Curriculum Vitae style for academic purposes</li>
+            <li><strong>📄 Detailed</strong> - Comprehensive layout with detailed sections</li>
+        </ul>
+        <p style="color: #666; margin-top: 15px; font-size: 14px; font-style: italic;">
+            Select your preferred template when you click "Generate Resume"
+        </p>
+    </div>
+
+    <div class="info-section" style="margin-top: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+        <h3>Getting Started</h3>
+        <ol style="color: #666;">
+            <li><strong>Complete Your Profile:</strong> Add your skills, education, projects, and professional summary</li>
+            <li><strong>Generate Resume:</strong> Choose a template and AI will create your resume</li>
+            <li><strong>Generate Cover Letter:</strong> AI will write a customized cover letter for target positions</li>
+            <li><strong>Generate Portfolio:</strong> Showcase your projects and skills in a professional portfolio</li>
+            <li><strong>Download & Use:</strong> Download your documents and use them for job applications</li>
+        </ol>
+    </div>
+</div>
+
+<style>
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #20c997;
+    }
+
+    .btn-info {
+        background-color: #2196F3;
+        color: white;
+    }
+
+    .btn-info:hover {
+        background-color: #1976D2;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .dashboard-buttons {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+</style>
+
+</body>
+</html>
