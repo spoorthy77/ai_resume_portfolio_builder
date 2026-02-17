@@ -76,6 +76,56 @@ class ResumeExporter:
         return resume_text.encode('utf-8'), 'text/plain'
 
     @staticmethod
+    def _generate_docx(user, profile_data, template_name):
+        """Generate MS Word (.docx) resume"""
+        from backend.services.resume_templates import ResumeTemplates
+        import tempfile
+        import os
+
+        class SimpleUser:
+            def __init__(self, user_obj, profile_data):
+                self.name = getattr(user_obj, 'name', profile_data.get('name', '[Your Name]'))
+                self.email = getattr(user_obj, 'email', profile_data.get('email', '[Your Email]'))
+
+        class SimpleProfile:
+            def __init__(self, data, user_obj):
+                self.headline = data.get('headline', '')
+                self.phone = data.get('phone', '[Your Phone]')
+                self.linkedin = data.get('linkedin', '')
+                self.github = data.get('github', '')
+                self.email = data.get('email', getattr(user_obj, 'email', '[Your Email]'))
+                self.leetcode = data.get('leetcode', '')
+                self.other_links = data.get('other_links', '')
+                self.summary = data.get('summary', '')
+                self.skills = data.get('skills', '')
+                self.projects = data.get('projects', '')
+                self.experience = data.get('experience', '')
+                self.education = data.get('education', '')
+                self.dob = data.get('dob', '')
+                self.languages = data.get('languages', '')
+                self.hobbies = data.get('hobbies', '')
+
+        simple_user = SimpleUser(user, profile_data)
+        simple_profile = SimpleProfile(profile_data, user)
+
+        # Create temporary file path
+        temp_dir = tempfile.gettempdir()
+        temp_path = os.path.join(temp_dir, f"resume_{template_name}.docx")
+        
+        # Use ResumeTemplates/AIResumeEnhancer to generate DOCX
+        ResumeTemplates.export_as_docx(template_name, simple_user, simple_profile, temp_path)
+        
+        # Read the file content
+        with open(temp_path, 'rb') as f:
+            content = f.read()
+            
+        # Clean up
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+            
+        return content, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+
+    @staticmethod
     def _generate_pdf(user, profile_data, template_name):
         """
         Generate a single-page PDF resume using an AI auto-fit engine.

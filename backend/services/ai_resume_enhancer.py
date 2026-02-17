@@ -16,7 +16,7 @@ class AIResumeEnhancer:
             'spacing': 1.15,
             'margins': {'top': 0.5, 'bottom': 0.5, 'left': 0.75, 'right': 0.75},
             'colors': {'primary': (0, 0, 0), 'accent': (0, 51, 102)},
-            'sections_order': ['contact', 'summary', 'experience', 'skills', 'education', 'projects']
+            'sections_order': ['contact', 'summary', 'education', 'skills', 'projects', 'experience', 'personal_details']
         },
         'modern': {
             'name': 'Modern',
@@ -26,7 +26,7 @@ class AIResumeEnhancer:
             'spacing': 1.15,
             'margins': {'top': 0.75, 'bottom': 0.75, 'left': 1, 'right': 1},
             'colors': {'primary': (31, 78, 121), 'accent': (192, 0, 0)},
-            'sections_order': ['contact', 'summary', 'skills', 'experience', 'projects', 'education']
+            'sections_order': ['contact', 'summary', 'education', 'skills', 'projects', 'experience', 'personal_details']
         },
         'simple': {
             'name': 'Simple',
@@ -36,7 +36,7 @@ class AIResumeEnhancer:
             'spacing': 1.0,
             'margins': {'top': 0.5, 'bottom': 0.5, 'left': 0.75, 'right': 0.75},
             'colors': {'primary': (0, 0, 0), 'accent': (64, 64, 64)},
-            'sections_order': ['contact', 'summary', 'experience', 'education', 'skills', 'projects']
+            'sections_order': ['contact', 'summary', 'education', 'skills', 'projects', 'experience', 'personal_details']
         },
         'technical': {
             'name': 'Technical',
@@ -46,7 +46,7 @@ class AIResumeEnhancer:
             'spacing': 1.0,
             'margins': {'top': 0.75, 'bottom': 0.75, 'left': 0.75, 'right': 0.75},
             'colors': {'primary': (0, 0, 0), 'accent': (0, 102, 204)},
-            'sections_order': ['contact', 'summary', 'skills', 'experience', 'projects', 'education']
+            'sections_order': ['contact', 'summary', 'education', 'skills', 'projects', 'experience', 'personal_details']
         },
         'academic': {
             'name': 'Academic',
@@ -56,7 +56,7 @@ class AIResumeEnhancer:
             'spacing': 1.5,
             'margins': {'top': 1, 'bottom': 1, 'left': 1, 'right': 1},
             'colors': {'primary': (0, 0, 0), 'accent': (51, 51, 51)},
-            'sections_order': ['contact', 'education', 'experience', 'projects', 'skills', 'summary']
+            'sections_order': ['contact', 'summary', 'education', 'skills', 'projects', 'experience', 'personal_details']
         },
         'detailed': {
             'name': 'Detailed',
@@ -66,7 +66,7 @@ class AIResumeEnhancer:
             'spacing': 1.15,
             'margins': {'top': 0.75, 'bottom': 0.75, 'left': 0.75, 'right': 0.75},
             'colors': {'primary': (0, 0, 0), 'accent': (102, 102, 102)},
-            'sections_order': ['contact', 'summary', 'experience', 'skills', 'projects', 'education']
+            'sections_order': ['contact', 'summary', 'education', 'skills', 'projects', 'experience', 'personal_details']
         }
     }
 
@@ -295,8 +295,15 @@ PROFESSIONAL SUMMARY
 {section_divider}
 {enhanced_summary}""")
         
-        # Skills Section (if technical template)
-        if template == 'technical' and profile.skills:
+        # Education Section
+        if profile.education:
+            resume_parts.append(f"""
+EDUCATION
+{section_divider}
+{profile.education}""")
+        
+        # Skills Section
+        if profile.skills:
             merged_skills = AIResumeEnhancer.categorize_skills(profile.skills)
             if merged_skills and 'Technical Skills' in merged_skills:
                 resume_parts.append(f"""
@@ -304,14 +311,6 @@ SKILLS
 {section_divider}""")
                 skills_list = merged_skills['Technical Skills']
                 resume_parts.append(f"__SKILL_LABEL__Technical Skills:__/SKILL_LABEL__ {', '.join(skills_list)}")
-        
-        # Experience Section
-        if profile.experience:
-            enhanced_exp = AIResumeEnhancer.enhance_experience_bullets(profile.experience)
-            resume_parts.append(f"""
-PROFESSIONAL EXPERIENCE
-{section_divider}
-{enhanced_exp}""")
         
         # Projects Section
         if profile.projects:
@@ -320,23 +319,14 @@ PROFESSIONAL EXPERIENCE
 PROJECTS & ACHIEVEMENTS
 {section_divider}
 {enhanced_proj}""")
-        
-        # Education Section
-        if profile.education:
+
+        # Experience Section
+        if profile.experience:
+            enhanced_exp = AIResumeEnhancer.enhance_experience_bullets(profile.experience)
             resume_parts.append(f"""
-EDUCATION
+PROFESSIONAL EXPERIENCE
 {section_divider}
-{profile.education}""")
-        
-        # Skills Section (if not technical)
-        if template != 'technical' and profile.skills:
-            merged_skills = AIResumeEnhancer.categorize_skills(profile.skills)
-            if merged_skills and 'Technical Skills' in merged_skills:
-                resume_parts.append(f"""
-SKILLS
-{section_divider}""")
-                skills_list = merged_skills['Technical Skills']
-                resume_parts.append(f"__SKILL_LABEL__Technical Skills:__/SKILL_LABEL__ {', '.join(skills_list)}")
+{enhanced_exp}""")
         
         # Personal Details Section
         personal_details = []
@@ -407,12 +397,10 @@ SKILLS
                 summary_para_format = summary_para.paragraph_format
                 summary_para_format.space_after = Pt(6)
             
-            # Add experience
-            if profile.experience:
-                doc.add_heading('PROFESSIONAL EXPERIENCE', level=1)
-                exp_lines = profile.experience.split('\n')
-                for line in exp_lines:
-                    doc.add_paragraph(line.strip(), style='List Bullet')
+            # Add education
+            if profile.education:
+                doc.add_heading('EDUCATION', level=1)
+                doc.add_paragraph(profile.education)
             
             # Add skills
             if profile.skills:
@@ -427,14 +415,9 @@ SKILLS
                     # Add skills in normal font
                     p.add_run(f" {', '.join(merged_skills['Technical Skills'])}")
             
-            # Add education
-            if profile.education:
-                doc.add_heading('EDUCATION', level=1)
-                doc.add_paragraph(profile.education)
-            
             # Add projects
             if profile.projects:
-                doc.add_heading('PROJECTS', level=1)
+                doc.add_heading('PROJECTS & ACHIEVEMENTS', level=1)
                 enhanced_projects = AIResumeEnhancer.enhance_project_bullets(profile.projects)
                 proj_lines = enhanced_projects.split('\n')
                 for line in proj_lines:
@@ -454,6 +437,36 @@ SKILLS
                     else:
                         # Add as bulleted item
                         doc.add_paragraph(line, style='List Bullet')
+
+            # Add experience
+            if profile.experience:
+                doc.add_heading('PROFESSIONAL EXPERIENCE', level=1)
+                exp_lines = profile.experience.split('\n')
+                for line in exp_lines:
+                    doc.add_paragraph(line.strip(), style='List Bullet')
+                    
+            # Add personal details
+            personal_details = []
+            if hasattr(profile, 'dob') and profile.dob:
+                dob_val = profile.dob
+                try:
+                    from datetime import datetime
+                    dob_date = datetime.strptime(dob_val, '%Y-%m-%d')
+                    dob_val = dob_date.strftime('%d %B %Y')
+                except:
+                    pass
+                personal_details.append(f"Date of Birth: {dob_val}")
+            
+            if hasattr(profile, 'languages') and profile.languages:
+                personal_details.append(f"Languages: {profile.languages}")
+                
+            if hasattr(profile, 'hobbies') and profile.hobbies:
+                personal_details.append(f"Hobbies: {profile.hobbies}")
+
+            if personal_details:
+                doc.add_heading('PERSONAL DETAILS', level=1)
+                for detail in personal_details:
+                    doc.add_paragraph(detail)
             
             # Save document
             doc.save(output_path)

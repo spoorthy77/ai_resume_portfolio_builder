@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "AI Resume and Portfolio Builder",
   "private": true,
+  "homepage": "/",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -41,5 +42,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
