@@ -3,6 +3,7 @@ services:
     name: ai-resume-portfolio
     env: python
     plan: free
+    pythonVersion: 3.12
     buildCommand: "pip install -r requirements.txt && cd frontend && npm install && npm run build"
     startCommand: "gunicorn app:app"
     routes:
