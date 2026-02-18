@@ -3,9 +3,14 @@ FROM python:3.11-slim as backend-builder
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies including Fortran for scipy
 RUN apt-get update && apt-get install -y \
+    build-essential \
     gcc \
+    gfortran \
+    libopenblas-dev \
+    liblapack-dev \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy backend requirements
