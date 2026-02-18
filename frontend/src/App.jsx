@@ -35,6 +35,7 @@ const Home = () => (
   </div>
 );
 
+
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { user } = useApp();

@@ -43,11 +43,33 @@ env/
 .DS_Store
 Thumbs.db
 
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+dist/
+
 # Project specific
 instance/
 *.db
 *.sqlite
 *.sqlite3
+generated_resumes/
+*.pdf
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Docker
+.dockerignore
 generated_resumes/*.pdf
 generated_resumes/*.docx
 
