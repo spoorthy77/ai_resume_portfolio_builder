@@ -6,9 +6,14 @@ from flask import Flask, redirect, url_for, send_from_directory
 from flask_cors import CORS
 from backend.config import Config
 
+# Determine static folder path - use build if available, otherwise use public
+static_folder_path = os.path.join(os.path.dirname(__file__), 'frontend', 'build')
+if not os.path.exists(static_folder_path):
+    static_folder_path = os.path.join(os.path.dirname(__file__), 'frontend', 'public')
+
 app = Flask(
     __name__,
-    static_folder="frontend/build",
+    static_folder=static_folder_path,
     static_url_path="/",
     instance_path=os.path.join(os.path.dirname(__file__), 'backend', 'instance')
 )
