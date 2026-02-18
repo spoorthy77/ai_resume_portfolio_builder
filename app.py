@@ -13,6 +13,7 @@ if not os.path.exists(static_folder_path):
 
 app = Flask(
     __name__,
+    template_folder=os.path.join(os.path.dirname(__file__), 'frontend', 'templates'),
     static_folder=static_folder_path,
     static_url_path="/",
     instance_path=os.path.join(os.path.dirname(__file__), 'backend', 'instance')
