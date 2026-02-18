@@ -3,9 +3,7 @@ AI Resume Optimization Service
 Analyzes resume against job descriptions using NLP techniques
 """
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
+from collections import Counter
 from groq import Groq
 from backend.config import Config
 
@@ -91,23 +89,20 @@ class ResumeOptimizer:
         resume_keywords = set(ResumeOptimizer.extract_keywords(resume_clean, 20))
         jd_keywords = set(ResumeOptimizer.extract_keywords(jd_clean, 25))
         
-        # Calculate overlapping and missing keywords
+        # Keyword overlap calculation
         overlapping = resume_keywords.intersection(jd_keywords)
         missing = jd_keywords - resume_keywords
         
-        # TF-IDF and Cosine Similarity calculation
-        vectorizer = TfidfVectorizer(
-            max_features=100,
-            stop_words='english',
-            ngram_range=(1, 2)
-        )
+        # Simple similarity calculation based on word overlap
+        all_keywords = resume_keywords.union(jd_keywords)
+        common_count = len(overlapping)
+        total_keywords = len(all_keywords)
         
-        try:
-            tfidf_matrix = vectorizer.fit_transform([resume_clean, jd_clean])
-            similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
-            match_score_base = int(similarity * 100)
-        except:
+        # Calculate match score based on overlap
+        if total_keywords == 0:
             match_score_base = 0
+        else:
+            match_score_base = int((common_count / total_keywords) * 100)
         
         # Boost score based on keyword overlap (40% base similarity, 60% keyword overlap)
         keyword_overlap_ratio = len(overlapping) / len(jd_keywords) if jd_keywords else 0
